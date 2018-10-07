@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.scut.mapper.UserItemMapper">
+	<!-- 定义resultMap具体的映射关系 -->
+	<!-- 层层嵌套实现映射 -->
+	<resultMap type="cn.scut.pojo.User" id="userResultMap">
+		<!-- 主键映射 -->
+		<id column="id" property="id"/>
+		<!-- 其他字段映射 -->
+		<result column="username" property="username"/>
+		<result column="birthday" property="birthday"/>
+		<result column="sex" property="sex"/>
+		<result column="address" property="address"/>
+		<!-- 配置关联的订单信息 -->
+		<collection property="orders" ofType="cn.scut.pojo.Order">
+			<id column="o_id" property="id"/>
+			<result column="number" property="number"/>
+			<result column="user_id" property="user_id"/>
+			<result column="createtime" property="createtime"/>
+			<result column="note" property="note"/>
+			
+			<!-- 配置关联订单明细信息 -->
+			<collection property="orderDetails" ofType="cn.scut.pojo.OrderDetail">
+				<id column="od_id" property="id"/>
+				
+				<result column="item_id" property="item_id"/>
+				<result column="order_id" property="order_id"/>
+				<result column="item_num" property="item_num"/>
+				<!-- 配置关联的商品信息 -->
+				<association property="item" javaType="cn.scut.pojo.Item">
+					<id column="item_id" property="id"/>
+					<result column="itemname" property="itemname"/>
+					<result column="detail" property="detail"/>
+					<result column="price" property="price"/>
+					<result column="item_createtime" property="createtime"/>
+			
+				</association>
+				
+				
+			</collection>
+		</collection>
+			
+	</resultMap>
+<!-- 使用resultType实现查询订单信息并关联用户信息 -->
+	<select id="findUserItemResultMap"  resultMap="userResultMap">
+			select `user`.*,
+			    `order`.id o_id,`order`.number,`order`.user_id,`order`.createtime,`order`.note,
+			     `orderdetail`.id od_id,`orderdetail`.item_id,`orderdetail`.order_id,`orderdetail`.item_num,
+			     `item`.id item_id,`item`.itemname,`item`.detail,`item`.price,`item`.createtime item_createtime
+			     from `user`,`order`,`orderdetail`,`item`
+			     where `order`.user_id=user.id and `orderdetail`.order_id=`order`.id and `orderdetail`.item_id=item.id;	
+	</select>
+</mapper>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.scut.mapper.OrderExMapper">
+<!-- 使用resultType实现查询订单信息并关联用户信息 -->
+	<select id="findOrderEx"  resultType="cn.scut.pojo.OrderEx">
+		 select 
+			 o.*,
+			 u.username,
+			 u.address 
+			 from `order` o,`user` u 
+			 where o.user_id=u.id;
+	</select>
+</mapper>

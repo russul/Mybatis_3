@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.scut.mapper.OrderMapperResultMap">
+	<!-- 定义resultMap具体的映射关系 -->
+	<resultMap type="cn.scut.pojo.Order" id="orderResultMap">
+		<!-- 主键映射 -->
+		<id column="id" property="id"/>
+		<!-- 其他字段映射 -->
+		<result column="user_id" property="user_id"/>
+		<result column="number" property="number"/>
+		<result column="createtime" property="createtime"/>
+		<result column="note" property="note"/>
+		<!-- 配置关联的用户信息 -->
+		<association property="user" javaType="cn.scut.pojo.User">
+			<!-- 根据查询到的列数进行映射，比如用user_id去映射user对象的id属性，
+			还比如没有完全把user的属性全映射完是因为查询的就是user表的部分信息而非全部信息 -->
+			<id column="user_id" property="id"/>
+			<result column="username" property="username"/>
+			<result column="address" property="address"/>
+		</association>
+			
+	</resultMap>
+<!-- 使用resultType实现查询订单信息并关联用户信息 -->
+	<select id="findOrderResultMap"  resultMap="orderResultMap">
+		 select 
+			 o.*,
+			 u.username,
+			 u.address 
+			 from `order` o,`user` u 
+			 where o.user_id=u.id;
+	</select>
+</mapper>

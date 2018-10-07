@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.scut.mapper.OrderOrderDetailMapperResultMap">
+	<!-- 定义resultMap具体的映射关系 -->
+	<resultMap type="cn.scut.pojo.Order" id="orderResultMap">
+		<!-- 主键映射 -->
+		<id column="id" property="id"/>
+		<!-- 其他字段映射 -->
+		<result column="user_id" property="user_id"/>
+		<result column="number" property="number"/>
+		<result column="createtime" property="createtime"/>
+		<result column="note" property="note"/>
+		<!-- 配置关联的订单明细信息 -->
+		<collection property="orderDetails" ofType="cn.scut.pojo.OrderDetail">
+			<id column="od_id" property="id"/>
+			<result column="order_id" property="order_id"/>
+			<result column="item_id" property="item_id"/>
+			<result column="item_num" property="item_num"/>
+		</collection>
+			
+	</resultMap>
+<!-- 使用resultType实现查询订单信息并关联用户信息 -->
+	<select id="findOrderResultMap"  resultMap="orderResultMap">
+		select 
+		o.*, od.id od_id,od.order_id,od.item_id,od.item_num 
+		from `order` o,`orderdetail` od 
+		where o.id=od.order_id;
+	</select>
+</mapper>
